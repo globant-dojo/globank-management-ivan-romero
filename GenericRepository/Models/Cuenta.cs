@@ -6,8 +6,8 @@
             Movimientos = new List<Movimiento>();
         }
         public int Id { get; set; }
-        public string? NumeroCuenta { get; set; }
-        public string? TipoCuenta { get; set; }
+        public string NumeroCuenta { get; set; } = null!;
+        public string TipoCuenta { get; set; } = null!;
         public decimal SaldoInicial { get; set; }
         public bool? Estado { get; set; }
 

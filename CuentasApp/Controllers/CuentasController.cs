@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CuentasApp.Services;
+using GenericRepository.Dtos;
 using GenericRepository.Interfaces;
 using GenericRepository.Models;
 using Microsoft.AspNetCore.JsonPatch;
@@ -9,66 +10,77 @@ using Microsoft.EntityFrameworkCore;
 namespace CuentasApp.Controllers;
 
 [ApiController]
-[Route("[Controller]")]
+[Route("api/[Controller]")]
 public class CuentasController : ControllerBase
 {
     private readonly IRepository<Cuenta> _cuentasRepository;
+    private readonly IRepository<Cliente> _clienteRepository;
     private readonly ICuentasService _cuentasService;
     private readonly IMapper _mapper;
-    public CuentasController(IRepository<Cuenta> cuentasRepository, ICuentasService cuentasService, IMapper mapper)
+    public CuentasController(IRepository<Cuenta> cuentasRepository, ICuentasService cuentasService, IMapper mapper, IRepository<Cliente> clienteRepository)
     {
         _cuentasRepository = cuentasRepository;
         _cuentasService = cuentasService;
         _mapper = mapper;
+        _clienteRepository = clienteRepository;
     }
 
     [HttpGet]
-    public ActionResult<Cliente> Get()
+    public ActionResult<Cuenta> Get()
     {
         var results = _cuentasRepository.GetAll();
 
-        return Ok(results);
+        return Ok(_mapper.Map<List<CuentaDto>>(results));
     }
 
     [HttpGet("{id:int}", Name = "GetById")]
     public async Task<IActionResult> GetById(int id)
     {
-        var entity = await _cuentasRepository.GetByIdAsync(id);
+        var cuenta = await _cuentasRepository.GetByIdAsync(id);
 
-        if (entity is null)
+        if (cuenta is null)
             return NotFound($"Cuenta con Id = {id} no existe.");
 
-        return Ok(entity);
+        return Ok(_mapper.Map<CuentaDto>(cuenta));
     }
 
     [HttpGet("{id:int}/movimientos")]
     public async Task<IActionResult> GetCuentaMovimientos(int id)
     {
-        var entity = await _cuentasRepository.GetAllIncluding(a => a.Movimientos).FirstOrDefaultAsync(a => a.Id == id);
+        var cuentasMovimientosEnBdd = await _cuentasRepository.GetAllIncluding(a => a.Movimientos).FirstOrDefaultAsync(a => a.Id == id);
 
-        if (entity is null)
+        if (cuentasMovimientosEnBdd is null)
             return NotFound($"Cuenta con Id = {id} no existe.");
 
-        return Ok(entity);
+        return Ok(_mapper.Map<CuentaDto>(cuentasMovimientosEnBdd));
     }
 
     [HttpPost]
-    public async Task<ActionResult<Cuenta>> Post([FromForm] Cuenta entity)
+    public async Task<ActionResult<Cuenta>> Post([FromBody] CuentaCreateDto cuentaDto)
     {
-        if (entity is null)
+        if (cuentaDto is null)
             return BadRequest(ModelState);
 
-        _cuentasRepository.Add(entity);
+        var clienteEnBDD = await _clienteRepository.GetByIdAsync(cuentaDto.ClienteId);
+
+        if (clienteEnBDD is null)
+            return BadRequest($"Cliente con Id = {cuentaDto.ClienteId} no existe.");
+
+        var cuenta = _mapper.Map<Cuenta>(cuentaDto);
+        cuenta.Cliente = clienteEnBDD;
+        _cuentasRepository.Add(cuenta);
 
         var result = await _cuentasRepository.UnitOfWork.SaveChangesAsync();
         if (result <= 0)
             return BadRequest("Los cambios no han sido guardados.");
 
-        return CreatedAtRoute(nameof(GetById), new { id = entity.Id }, entity);
+        var cuentaResult = _mapper.Map<CuentaDto>(cuenta);
+
+        return CreatedAtRoute(nameof(GetById), new { id = cuenta.Id }, cuentaResult);
     }
 
-    [HttpDelete("{id:int}/)")]
-    public async Task<ActionResult<Cliente>> Delete(int id)
+    [HttpDelete("{id:int}")]
+    public async Task<ActionResult<Cuenta>> Delete(int id)
     {
         var cuentasCliente = await _cuentasRepository.GetAllIncluding(a => a.Movimientos).FirstOrDefaultAsync(a => a.Id == id);
 
@@ -93,8 +105,8 @@ public class CuentasController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("{id:int}/Cascada)")]
-    public async Task<ActionResult<Cliente>> DeleteCascada(int id)
+    [HttpDelete("{id:int}/Cascada")]
+    public async Task<ActionResult<Cuenta>> DeleteCascada(int id)
     {
         var cuenta = await _cuentasRepository.GetByIdAsync(id);
 
@@ -114,12 +126,12 @@ public class CuentasController : ControllerBase
     }
     
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> Put(int id, [FromBody] Cuenta cuenta)
+    public async Task<IActionResult> Put(int id, [FromBody] CuentaUpdateDto cuentaDto)
     {
-        if (cuenta is null)
+        if (cuentaDto is null)
             return BadRequest(ModelState);
 
-        if (id != cuenta.Id)
+        if (id != cuentaDto.Id)
             return BadRequest("Id no válido o no concuerdan.");
 
         var cuentaEnBDD = await _cuentasRepository.GetByIdAsync(id);
@@ -127,11 +139,20 @@ public class CuentasController : ControllerBase
         if (cuentaEnBDD is null)
             return NotFound($"Cuenta con Id = {id} no existe.");
 
-        cuentaEnBDD.TipoCuenta = cuenta.TipoCuenta;
-        cuentaEnBDD.NumeroCuenta = cuenta.NumeroCuenta;
-        cuentaEnBDD.SaldoInicial = cuenta.SaldoInicial;
-        cuentaEnBDD.Estado = cuenta.Estado;
-        cuentaEnBDD.Cliente.Id = cuenta.Cliente.Id;
+        var clienteEnBDD = await _clienteRepository.GetByIdAsync(cuentaDto.ClienteId);
+
+        if (clienteEnBDD is null)
+            return BadRequest($"Cliente con Id = {cuentaDto.ClienteId} no existe.");
+
+        cuentaEnBDD.TipoCuenta = cuentaDto.TipoCuenta;
+        cuentaEnBDD.NumeroCuenta = cuentaDto.NumeroCuenta;
+        cuentaEnBDD.SaldoInicial = cuentaDto.SaldoInicial;
+        cuentaEnBDD.Estado = cuentaDto.Estado;
+
+        if (cuentaEnBDD.Cliente.Id != cuentaDto.ClienteId)
+        {
+            cuentaEnBDD.Cliente = clienteEnBDD;
+        }
 
         _cuentasRepository.Update(cuentaEnBDD);
 
@@ -148,8 +169,8 @@ public class CuentasController : ControllerBase
         if (patchDoc is null)
             return BadRequest(ModelState);
 
-        var existEntity = await _cuentasRepository.GetByIdAsync(id);
-        
+        //var existEntity = await _cuentasRepository.GetByIdAsync(id);
+        var existEntity = await _cuentasRepository.GetAllIncluding(a => a.Cliente).FirstOrDefaultAsync(a => a.Id == id);
         if (existEntity is null)
             return NotFound($"Cuenta con Id = {id} no existe.");
 

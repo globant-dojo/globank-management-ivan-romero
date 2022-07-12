@@ -1,14 +1,12 @@
-﻿using GenericRepository.Models;
-
-namespace GenericRepository.Dtos
+﻿namespace GenericRepository.Dtos
 {
-    public class CuentaDto
+    public class CuentaUpdateDto
     {
         public int Id { get; set; }
         public string NumeroCuenta { get; set; } = null!;
         public string TipoCuenta { get; set; } = null!;
         public decimal SaldoInicial { get; set; }
-        public bool? Estado { get; set; }
-        public ICollection<MovimientoDto> Movimientos { get; set; } = null!;
+        public bool? Estado { get; set; }        
+        public int ClienteId { get; set; }
     }
 }

@@ -19,7 +19,6 @@ public static class DependencyInjection
         services.AddSingleton(typeof(ICuentasService), typeof(CuentasService));
         services.AddTransient(typeof(IRepository<>), typeof(BaseRepository<>));
         services.AddTransient(typeof(IReadRepository<>), typeof(BaseRepository<>));
-        //services.AddTransient<ICustomPostRepository, CustomPostRepository>();
 
         return services;
     }

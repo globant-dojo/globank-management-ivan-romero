@@ -13,6 +13,8 @@ namespace GenericRepository.Profiles
             CreateMap<Movimiento, MovimientoCreateDto>().ReverseMap();
             CreateMap<Movimiento, MovimientoDto>().ReverseMap();
             CreateMap<Cuenta, CuentaDto>().ReverseMap();
+            CreateMap<ClienteCreateDto, Cliente>().ReverseMap();
+            CreateMap<CuentaCreateDto, Cuenta>().ReverseMap();
         }
     }
 }

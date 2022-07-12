@@ -1,4 +1,3 @@
-using GenericRepository;
 using GenericRepository.Data;
 using Microsoft.EntityFrameworkCore;
 

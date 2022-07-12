@@ -11,8 +11,7 @@ namespace GenericRepository.Dtos
         public string? Identificacion { get; set; }
         public string Direccion { get; set; } = null!;
         public string Telefono { get; set; } = null!;
-        //public string Contrasena { get; set; } = null!;
         public bool? Estado { get; set; }
-        public ICollection<CuentaDto> Cuentas { get; set; }
+        public ICollection<CuentaDto> Cuentas { get; set; } = null!;
     }
 }

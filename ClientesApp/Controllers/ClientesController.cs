@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace ClientesApp.Controllers;
 
 [ApiController]
-[Route("[Controller]")]
+[Route("api/[Controller]")]
 public class ClientesController : ControllerBase
 {
     private readonly IRepository<Cliente> _clientesRepository;
@@ -55,10 +55,12 @@ public class ClientesController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<Cliente>> Post([FromForm] Cliente cliente)
+    public async Task<ActionResult<Cliente>> Post([FromBody] ClienteCreateDto clienteDto)
     {
-        if (cliente is null)
+        if (clienteDto is null)
             return BadRequest(ModelState);
+
+        var cliente = _mapper.Map<Cliente>(clienteDto);
 
         _clientesRepository.Add(cliente);
 
@@ -69,7 +71,7 @@ public class ClientesController : ControllerBase
         return CreatedAtRoute(nameof(GetById), new { id = cliente.Id }, cliente);
     }
 
-    [HttpDelete("{id:int})")]
+    [HttpDelete("{id:int}")]
     public async Task<ActionResult<Cliente>> Delete(int id)
     {
         var clienteYSusCuentas = await _clientesRepository.GetAllIncluding(a => a.Cuentas).FirstOrDefaultAsync(a => a.Id == id);
@@ -96,7 +98,7 @@ public class ClientesController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("{id:int}/Cascada)")]
+    [HttpDelete("{id:int}/Cascada")]
     public async Task<ActionResult<Cliente>> DeleteCascada(int id)
     {
         var cliente = await _clientesRepository.GetByIdAsync(id);
