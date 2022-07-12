@@ -16,6 +16,11 @@ public class ReporteRepository : BaseRepository<Cliente>, IReporteRepository
 
     public async Task<Cliente> GetReportePorFechas(int clienteId, DateTime fechaIni, DateTime fechaFin)
     {
-        return await _dbContext.Clientes.Where(con => con.Id == clienteId).Include(c => c.Cuentas).ThenInclude(cue => cue.Movimientos.Where(mov => mov.Fecha <= fechaFin && mov.Fecha >= fechaIni)).FirstOrDefaultAsync();
+        return await _dbContext.Clientes
+                .Where(con => con.Id == clienteId)
+                .Include(c => c.Cuentas)
+                .ThenInclude(cue => cue.Movimientos
+                    .Where(mov => mov.Fecha <= fechaFin && mov.Fecha >= fechaIni))
+                .FirstOrDefaultAsync();
     }
 }

@@ -20,11 +20,11 @@ public class ReportesController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> Get(int clienteId, DateTime fechaIni, DateTime fechaFin)
     {
-        var entity = await _reportesRepository.GetReportePorFechas(clienteId, fechaIni, fechaFin);
-        if (entity is null)
+        var datosParaReporte = await _reportesRepository.GetReportePorFechas(clienteId, fechaIni, fechaFin);
+        if (datosParaReporte is null)
             return NotFound($"Cliente con Id = {clienteId} no existe.");
 
-        var result = _reportesService.Convertir(entity);
+        var result = _reportesService.ObtenerFormatoSalida(datosParaReporte);
 
         return Ok(result);
     }

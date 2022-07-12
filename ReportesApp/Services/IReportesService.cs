@@ -5,6 +5,6 @@ namespace ReportesApp.Services
 {
     public interface IReportesService
     {
-        List<ReporteDto> Convertir(Cliente cliente);
+        List<ReporteDto> ObtenerFormatoSalida(Cliente cliente);
     }
 }
