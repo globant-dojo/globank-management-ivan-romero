@@ -1,0 +1,29 @@
+version: '3.4'
+
+services:
+  clientesapp:
+    image: ${DOCKER_REGISTRY-}clientesapp
+    build:
+      context: .
+      dockerfile: ClientesApp/Dockerfile
+
+  cuentasapp:
+    image: ${DOCKER_REGISTRY-}cuentasapp
+    build:
+      context: .
+      dockerfile: CuentasApp/Dockerfile
+
+
+  movimientosapp:
+    image: ${DOCKER_REGISTRY-}movimientosapp
+    build:
+      context: .
+      dockerfile: MovimientosApp/Dockerfile
+
+
+  reportesapp:
+    image: ${DOCKER_REGISTRY-}reportesapp
+    build:
+      context: .
+      dockerfile: ReportesApp/Dockerfile
+
