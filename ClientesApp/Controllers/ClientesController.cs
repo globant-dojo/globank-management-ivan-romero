@@ -38,7 +38,7 @@ public class ClientesController : ControllerBase
         var clienteEnBDD = await _clientesRepository.GetByIdAsync(id);
 
         if (clienteEnBDD is null)
-            return NotFound($"Cliente con Id = {id} no existe.");
+            return BadRequest($"Cliente con Id = {id} no existe.");
 
         return Ok(_mapper.Map<ClienteDto>(clienteEnBDD));
     }
@@ -49,7 +49,7 @@ public class ClientesController : ControllerBase
         var clientesCuentasEnBdd = await _clientesRepository.GetAllIncluding(a => a.Cuentas).FirstOrDefaultAsync(a => a.Id == id);
 
         if (clientesCuentasEnBdd is null)
-            return NotFound($"Cliente con Id = {id} no existe.");
+            return BadRequest($"Cliente con Id = {id} no existe.");
 
         return Ok(_mapper.Map<ClienteDto>(clientesCuentasEnBdd));
     }
@@ -79,14 +79,14 @@ public class ClientesController : ControllerBase
 
         if (clienteYSusCuentas is null)
         {
-            return NotFound($"Cliente con Id = {id} no existe.");
+            return BadRequest($"Cliente con Id = {id} no existe.");
         }
 
         var tieneCuentas = _clientesService.ClienteTieneCuentas(clienteYSusCuentas);
 
         if(tieneCuentas)
         {
-            return NotFound($"Cliente con Id = {id} tiene cuentas.");
+            return BadRequest($"Cliente con Id = {id} tiene cuentas.");
         }
 
         _clientesRepository.Delete(clienteYSusCuentas);
@@ -105,7 +105,7 @@ public class ClientesController : ControllerBase
 
         if (cliente is null)
         {
-            return NotFound($"Cliente con Id = {id} no existe.");
+            return BadRequest($"Cliente con Id = {id} no existe.");
         }
 
         _clientesRepository.Delete(cliente);        
@@ -130,7 +130,7 @@ public class ClientesController : ControllerBase
         var clienteEnBDD = await _clientesRepository.GetByIdAsync(id);
 
         if (clienteEnBDD is null)
-            return NotFound($"Cliente con Id = {id} no existe.");
+            return BadRequest($"Cliente con Id = {id} no existe.");
 
         clienteEnBDD.Telefono = client.Telefono;
         clienteEnBDD.Nombre = client.Nombre;
@@ -156,7 +156,7 @@ public class ClientesController : ControllerBase
 
         var existEntity = await _clientesRepository.GetByIdAsync(id);
         if (existEntity is null)
-            return NotFound($"Cliente con Id = {id} no existe.");
+            return BadRequest($"Cliente con Id = {id} no existe.");
 
         patchDoc.ApplyTo(existEntity, ModelState);
 
@@ -169,9 +169,9 @@ public class ClientesController : ControllerBase
         {
             await _clientesRepository.UnitOfWork.SaveChangesAsync();
         }
-        catch (DbUpdateConcurrencyException)
+        catch (DbUpdateConcurrencyException ex)
         {
-            throw;
+            BadRequest(ex.Message);
         }
 
         return NoContent();

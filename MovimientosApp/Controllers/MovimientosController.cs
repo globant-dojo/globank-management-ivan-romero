@@ -10,20 +10,20 @@ using MovimientosApp.Services;
 namespace MovimimientosApp.Controllers;
 
 [ApiController]
-[Route("[Controller]")]
+[Route("api/[Controller]")]
 public class MovimientosController : ControllerBase
 {
     private readonly IRepository<Movimiento> _movimientosRepository;
-    private readonly IRepository<Cuenta> _cuentaRepository;
+    private readonly IRepository<Cuenta> _cuentasRepository;
     private readonly IMovimientosService _movimientosService;
     private readonly IMapper _mapper;
 
-    public MovimientosController(IRepository<Movimiento> movimientosRepository, IMovimientosService movimientosService, IMapper mapper, IRepository<Cuenta> cuentaRepository)
+    public MovimientosController(IRepository<Movimiento> movimientosRepository, IMovimientosService movimientosService, IMapper mapper, IRepository<Cuenta> cuentasRepository)
     {
         _movimientosRepository = movimientosRepository;
         _movimientosService = movimientosService;
         _mapper = mapper;
-        _cuentaRepository = cuentaRepository;
+        _cuentasRepository = cuentasRepository;
     }
 
     [HttpGet]
@@ -40,18 +40,18 @@ public class MovimientosController : ControllerBase
         var movimientoEnBDD = await _movimientosRepository.GetByIdAsync(id);
 
         if (movimientoEnBDD is null)
-            return NotFound($"Movimiento con Id = {id} no existe.");
+            return BadRequest($"Movimiento con Id = {id} no existe.");
 
         return Ok(movimientoEnBDD);
     }
 
     [HttpPost]
-    public async Task<ActionResult<Cliente>> Post([FromForm] MovimientoCreateDto movimientoDto)
+    public async Task<ActionResult<Cliente>> Post([FromBody] MovimientoCreateDto movimientoDto)
     {
         if (movimientoDto is null)
             return BadRequest(ModelState);
 
-        var cuentaEnBDD = await _cuentaRepository.GetByIdAsync(movimientoDto.CuentaId);
+        var cuentaEnBDD = await _cuentasRepository.GetByIdAsync(movimientoDto.CuentaId);
 
         if (cuentaEnBDD is null)
             return BadRequest($"Cuenta con Id = {movimientoDto.CuentaId} no existe.");
@@ -81,17 +81,19 @@ public class MovimientosController : ControllerBase
             return BadRequest("Los cambios no han sido guardados.");
         }
 
-        return CreatedAtRoute(nameof(GetById), new { id = movimiento.Id }, movimiento);
+        var movimientoResult = _mapper.Map<MovimientoDto>(movimiento);
+
+        return CreatedAtRoute(nameof(GetById), new { id = movimiento.Id }, movimientoResult);
     }
 
-    [HttpDelete("{id:int}/)")]
-    public async Task<ActionResult<Cliente>> Delete(int id)
+    [HttpDelete("{id:int}/")]
+    public async Task<ActionResult<Movimiento>> Delete(int id)
     {
         var movimientoEnBDD = await _movimientosRepository.GetByIdAsync(id);
 
         if (movimientoEnBDD is null)
         {
-            return NotFound($"Movimiento con Id = {id} no existe.");
+            return BadRequest($"Movimiento con Id = {id} no existe.");
         }
 
         _movimientosRepository.Delete(movimientoEnBDD);
@@ -104,61 +106,39 @@ public class MovimientosController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> Put(int id, [FromBody] Movimiento movimiento)
+    public async Task<IActionResult> Put(int id, [FromBody] MovimientoUpdateDto movimientoDto)
     {
-        if (movimiento is null)
+        if (movimientoDto is null)
             return BadRequest(ModelState);
 
-        if (id != movimiento.Id)
+        if (id != movimientoDto.Id)
             return BadRequest("Id no válido o no concuerdan.");
 
-        var movimientoEnBDD = await _movimientosRepository.GetByIdAsync(id);
+        var movimientoEnBDD = await _movimientosRepository.GetByIdAsync(movimientoDto.Id);
 
         if (movimientoEnBDD is null)
-            return NotFound($"Cuenta con Id = {id} no existe.");
+            return BadRequest($"Movimiento con Id = {id} no existe.");
 
-        movimientoEnBDD.Fecha = movimiento.Fecha;
-        movimientoEnBDD.TipoMovimiento = movimiento.TipoMovimiento;
-        movimientoEnBDD.Valor = movimiento.Valor;
-        movimientoEnBDD.Saldo = movimiento.Saldo;
-        movimientoEnBDD.Estado = movimiento.Estado;
-        movimientoEnBDD.Cuenta.Id = movimiento.Cuenta.Id;
+        var cuentaEnBDD = await _cuentasRepository.GetByIdAsync(id);
+
+        if (cuentaEnBDD is null)
+            return BadRequest($"Cuenta con Id = {movimientoDto.CuentaId} no existe.");
+
+        movimientoEnBDD.Fecha = movimientoDto.Fecha;
+        movimientoEnBDD.TipoMovimiento = movimientoDto.TipoMovimiento;
+        movimientoEnBDD.Valor = movimientoDto.Valor;
+        movimientoEnBDD.Saldo = movimientoDto.Saldo;
+        movimientoEnBDD.Estado = movimientoDto.Estado;
+        movimientoEnBDD.Cuenta = cuentaEnBDD;
 
         _movimientosRepository.Update(movimientoEnBDD);
 
+        //TO DO Implementar lógica para recalcular entidades
+
         var result = await _movimientosRepository.UnitOfWork.SaveChangesAsync();
+
         if (result <= 0)
             return BadRequest("Los cambios no han sido guardados.");
-
-        return NoContent();
-    }
-
-    [HttpPatch("{id:int}")]
-    public async Task<IActionResult> Patch(int id, [FromBody] JsonPatchDocument<Movimiento> patchDoc)
-    {
-        if (patchDoc is null)
-            return BadRequest(ModelState);
-
-        var existEntity = await _movimientosRepository.GetByIdAsync(id);
-
-        if (existEntity is null)
-            return NotFound($"Cuenta con Id = {id} no existe.");
-
-        patchDoc.ApplyTo(existEntity, ModelState);
-
-        var isValid = TryValidateModel(existEntity);
-
-        if (!isValid)
-            return BadRequest(ModelState);
-
-        try
-        {
-            await _movimientosRepository.UnitOfWork.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            throw;
-        }
 
         return NoContent();
     }

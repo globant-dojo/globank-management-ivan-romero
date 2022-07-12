@@ -39,7 +39,7 @@ public class CuentasController : ControllerBase
         var cuenta = await _cuentasRepository.GetByIdAsync(id);
 
         if (cuenta is null)
-            return NotFound($"Cuenta con Id = {id} no existe.");
+            return BadRequest($"Cuenta con Id = {id} no existe.");
 
         return Ok(_mapper.Map<CuentaDto>(cuenta));
     }
@@ -50,7 +50,7 @@ public class CuentasController : ControllerBase
         var cuentasMovimientosEnBdd = await _cuentasRepository.GetAllIncluding(a => a.Movimientos).FirstOrDefaultAsync(a => a.Id == id);
 
         if (cuentasMovimientosEnBdd is null)
-            return NotFound($"Cuenta con Id = {id} no existe.");
+            return BadRequest($"Cuenta con Id = {id} no existe.");
 
         return Ok(_mapper.Map<CuentaDto>(cuentasMovimientosEnBdd));
     }
@@ -137,7 +137,7 @@ public class CuentasController : ControllerBase
         var cuentaEnBDD = await _cuentasRepository.GetByIdAsync(id);
 
         if (cuentaEnBDD is null)
-            return NotFound($"Cuenta con Id = {id} no existe.");
+            return BadRequest($"Cuenta con Id = {id} no existe.");
 
         var clienteEnBDD = await _clienteRepository.GetByIdAsync(cuentaDto.ClienteId);
 
@@ -148,47 +148,13 @@ public class CuentasController : ControllerBase
         cuentaEnBDD.NumeroCuenta = cuentaDto.NumeroCuenta;
         cuentaEnBDD.SaldoInicial = cuentaDto.SaldoInicial;
         cuentaEnBDD.Estado = cuentaDto.Estado;
-
-        if (cuentaEnBDD.Cliente.Id != cuentaDto.ClienteId)
-        {
-            cuentaEnBDD.Cliente = clienteEnBDD;
-        }
+        cuentaEnBDD.Cliente = clienteEnBDD;
 
         _cuentasRepository.Update(cuentaEnBDD);
 
         var result = await _cuentasRepository.UnitOfWork.SaveChangesAsync();
         if (result <= 0)
             return BadRequest("Los cambios no han sido guardados.");
-
-        return NoContent();
-    }
-
-    [HttpPatch("{id:int}")]
-    public async Task<IActionResult> Patch(int id, [FromBody] JsonPatchDocument<Cuenta> patchDoc)
-    {
-        if (patchDoc is null)
-            return BadRequest(ModelState);
-
-        //var existEntity = await _cuentasRepository.GetByIdAsync(id);
-        var existEntity = await _cuentasRepository.GetAllIncluding(a => a.Cliente).FirstOrDefaultAsync(a => a.Id == id);
-        if (existEntity is null)
-            return NotFound($"Cuenta con Id = {id} no existe.");
-
-        patchDoc.ApplyTo(existEntity, ModelState);
-
-        var isValid = TryValidateModel(existEntity);
-
-        if (!isValid)
-            return BadRequest(ModelState);
-
-        try
-        {
-            await _cuentasRepository.UnitOfWork.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            throw;
-        }
 
         return NoContent();
     }

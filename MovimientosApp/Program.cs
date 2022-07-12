@@ -1,5 +1,3 @@
-using GenericRepository.Data;
-using Microsoft.EntityFrameworkCore;
 using MovimimientosApp;
 
 var builder = WebApplication.CreateBuilder(args);
