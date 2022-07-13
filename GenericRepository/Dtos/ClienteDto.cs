@@ -1,6 +1,4 @@
-﻿using GenericRepository.Models;
-
-namespace GenericRepository.Dtos
+﻿namespace GenericRepository.Dtos
 {
     public class ClienteDto
     {

@@ -1,6 +1,5 @@
 ﻿using GenericRepository.Dtos;
 using GenericRepository.Models;
-using System.Linq;
 
 namespace ReportesApp.Services
 {

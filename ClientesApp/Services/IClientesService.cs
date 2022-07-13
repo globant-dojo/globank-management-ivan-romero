@@ -1,5 +1,4 @@
 ﻿using GenericRepository.Models;
-using Microsoft.AspNetCore.Mvc;
 
 namespace ClientesApp.Services
 {

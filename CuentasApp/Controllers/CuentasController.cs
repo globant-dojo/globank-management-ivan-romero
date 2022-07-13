@@ -3,7 +3,6 @@ using CuentasApp.Services;
 using GenericRepository.Dtos;
 using GenericRepository.Interfaces;
 using GenericRepository.Models;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -61,13 +60,13 @@ public class CuentasController : ControllerBase
         if (cuentaDto is null)
             return BadRequest(ModelState);
 
-        var clienteEnBDD = await _clienteRepository.GetByIdAsync(cuentaDto.ClienteId);
+        var clienteEnBdd = await _clienteRepository.GetByIdAsync(cuentaDto.ClienteId);
 
-        if (clienteEnBDD is null)
+        if (clienteEnBdd is null)
             return BadRequest($"Cliente con Id = {cuentaDto.ClienteId} no existe.");
 
         var cuenta = _mapper.Map<Cuenta>(cuentaDto);
-        cuenta.Cliente = clienteEnBDD;
+        cuenta.Cliente = clienteEnBdd;
         _cuentasRepository.Add(cuenta);
 
         var result = await _cuentasRepository.UnitOfWork.SaveChangesAsync();
@@ -134,23 +133,23 @@ public class CuentasController : ControllerBase
         if (id != cuentaDto.Id)
             return BadRequest("Id no válido o no concuerdan.");
 
-        var cuentaEnBDD = await _cuentasRepository.GetByIdAsync(id);
+        var cuentaEnBdd = await _cuentasRepository.GetByIdAsync(id);
 
-        if (cuentaEnBDD is null)
+        if (cuentaEnBdd is null)
             return BadRequest($"Cuenta con Id = {id} no existe.");
 
-        var clienteEnBDD = await _clienteRepository.GetByIdAsync(cuentaDto.ClienteId);
+        var clienteEnBdd = await _clienteRepository.GetByIdAsync(cuentaDto.ClienteId);
 
-        if (clienteEnBDD is null)
+        if (clienteEnBdd is null)
             return BadRequest($"Cliente con Id = {cuentaDto.ClienteId} no existe.");
 
-        cuentaEnBDD.TipoCuenta = cuentaDto.TipoCuenta;
-        cuentaEnBDD.NumeroCuenta = cuentaDto.NumeroCuenta;
-        cuentaEnBDD.SaldoInicial = cuentaDto.SaldoInicial;
-        cuentaEnBDD.Estado = cuentaDto.Estado;
-        cuentaEnBDD.Cliente = clienteEnBDD;
+        cuentaEnBdd.TipoCuenta = cuentaDto.TipoCuenta;
+        cuentaEnBdd.NumeroCuenta = cuentaDto.NumeroCuenta;
+        cuentaEnBdd.SaldoInicial = cuentaDto.SaldoInicial;
+        cuentaEnBdd.Estado = cuentaDto.Estado;
+        cuentaEnBdd.Cliente = clienteEnBdd;
 
-        _cuentasRepository.Update(cuentaEnBDD);
+        _cuentasRepository.Update(cuentaEnBdd);
 
         var result = await _cuentasRepository.UnitOfWork.SaveChangesAsync();
         if (result <= 0)

@@ -2,9 +2,7 @@
 using GenericRepository.Dtos;
 using GenericRepository.Interfaces;
 using GenericRepository.Models;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using MovimientosApp.Services;
 
 namespace MovimimientosApp.Controllers;
