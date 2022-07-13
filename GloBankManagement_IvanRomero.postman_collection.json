@@ -1,0 +1,367 @@
+{
+	"variables": [],
+	"info": {
+		"name": "GloBankManagement_IvanRomero",
+		"_postman_id": "04190884-631f-14ba-6f20-b4020b296391",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Docker",
+			"description": "",
+			"item": [
+				{
+					"name": "Clientes",
+					"description": "",
+					"item": [
+						{
+							"name": "Get",
+							"request": {
+								"url": "https://localhost:{{portCliente}}/api/Clientes",
+								"method": "GET",
+								"header": [],
+								"body": {},
+								"description": "Retorna todos los clientes"
+							},
+							"response": []
+						},
+						{
+							"name": "GetById",
+							"request": {
+								"url": "https://localhost:{{portCliente}}/api/clientes/1",
+								"method": "GET",
+								"header": [],
+								"body": {},
+								"description": "Obtiene cliente parámetro Id "
+							},
+							"response": []
+						},
+						{
+							"name": "GetClienteCuentas",
+							"request": {
+								"url": "https://localhost:{{portCliente}}/api/clientes/1/cuentas",
+								"method": "GET",
+								"header": [],
+								"body": {},
+								"description": "Obtiene las cuentas de un cliente Parametro Id"
+							},
+							"response": []
+						},
+						{
+							"name": "Post",
+							"request": {
+								"url": "https://localhost:{{portCliente}}/api/Clientes",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"Contrasena\": \"1234\",\r\n  \"Estado\": true,\r\n  \"Nombre\": \"Nombre Prueba\",\r\n  \"Identificacion\": \"187715489\",\r\n  \"Direccion\": \"Quito\",\r\n  \"Telefono\": \"0975154891\"\r\n}"
+								},
+								"description": "Crea Cliente"
+							},
+							"response": []
+						},
+						{
+							"name": "Delete",
+							"request": {
+								"url": "https://localhost:{{portCliente}}/api/clientes/5",
+								"method": "DELETE",
+								"header": [],
+								"body": {},
+								"description": "Elimina un cliente\nControla no tenga cuentas"
+							},
+							"response": []
+						},
+						{
+							"name": "DeleteCascada",
+							"request": {
+								"url": "https://localhost:{{portCliente}}/api/clientes/1/Cascada",
+								"method": "DELETE",
+								"header": [],
+								"body": {},
+								"description": "Elimina un cliente con sus cuentas y movimientos"
+							},
+							"response": []
+						},
+						{
+							"name": "Put",
+							"request": {
+								"url": "https://localhost:{{portCliente}}/api/Clientes/2",
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"Id\": 2,\r\n  \"Contrasena\": \"1234\",\r\n  \"Estado\": true,\r\n  \"Nombre\": \"Nombre Prueba\",\r\n  \"Identificacion\": \"187715489\",\r\n  \"Direccion\": \"Quito\",\r\n  \"Telefono\": \"0975154891\"\r\n}"
+								},
+								"description": "Actualiza un cliente"
+							},
+							"response": []
+						},
+						{
+							"name": "Patch",
+							"request": {
+								"url": "https://localhost:{{portCliente}}/api/Clientes/2",
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "[\r\n  {\r\n    \"path\": \"/Nombre\",\r\n    \"op\": \"replace\",\r\n    \"value\": \"prueba20\"\r\n  }\r\n]"
+								},
+								"description": "Actualiza cliente en función campos especificados en el body"
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Cuentas",
+					"description": "",
+					"item": [
+						{
+							"name": "Get",
+							"request": {
+								"url": "https://localhost:{{portCuenta}}/api/cuentas",
+								"method": "GET",
+								"header": [],
+								"body": {},
+								"description": "Retorna todas las cuentas\n"
+							},
+							"response": []
+						},
+						{
+							"name": "GetById",
+							"request": {
+								"url": "https://localhost:{{portCuenta}}/api/cuentas/2",
+								"method": "GET",
+								"header": [],
+								"body": {},
+								"description": "Obtiene cuenta parámetro Id "
+							},
+							"response": []
+						},
+						{
+							"name": "GetClienteCuentas",
+							"request": {
+								"url": "https://localhost:{{portCuenta}}/api/cuentas/2/movimientos",
+								"method": "GET",
+								"header": [],
+								"body": {},
+								"description": "Obtiene los movimientos de una cuenta Parametro Id"
+							},
+							"response": []
+						},
+						{
+							"name": "Post",
+							"request": {
+								"url": "https://localhost:{{portCuenta}}/api/cuentas",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"NumeroCuenta\": \"878612\",\r\n  \"TipoCuenta\": \"Ahorros\",\r\n  \"SaldoInicial\": 23000,\r\n  \"Estado\": true,\r\n  \"ClienteId\": 2\r\n}"
+								},
+								"description": "Crea Cuenta"
+							},
+							"response": []
+						},
+						{
+							"name": "Delete",
+							"request": {
+								"url": "https://localhost:{{portCuenta}}/api/cuentas/7",
+								"method": "DELETE",
+								"header": [],
+								"body": {},
+								"description": "Elimina una cuenta\nControla no tenga movimientos"
+							},
+							"response": []
+						},
+						{
+							"name": "DeleteCascada",
+							"request": {
+								"url": "https://localhost:{{portCuenta}}/api/cuentas/2/Cascada",
+								"method": "DELETE",
+								"header": [],
+								"body": {},
+								"description": "Elimina una cuenta con sus movimientos"
+							},
+							"response": []
+						},
+						{
+							"name": "Put",
+							"request": {
+								"url": "https://localhost:{{portCuenta}}/api/cuentas/3",
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"Id\": 3,\r\n  \"NumeroCuenta\": \"1231\",\r\n  \"TipoCuenta\": \"Ahorros\",\r\n  \"SaldoInicial\": 1,\r\n  \"Estado\": true,\r\n  \"ClienteId\": 4\r\n}"
+								},
+								"description": "Actualiza una cuenta"
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Movimientos",
+					"description": "",
+					"item": [
+						{
+							"name": "Get",
+							"request": {
+								"url": "https://localhost:{{portMovimiento}}/api/movimientos",
+								"method": "GET",
+								"header": [],
+								"body": {},
+								"description": "Retorna todas los Movimientos\n"
+							},
+							"response": []
+						},
+						{
+							"name": "GetById",
+							"request": {
+								"url": "https://localhost:{{portMovimiento}}/api/movimientos/4",
+								"method": "GET",
+								"header": [],
+								"body": {},
+								"description": "Obtiene Movimiento parámetro Id "
+							},
+							"response": []
+						},
+						{
+							"name": "Post",
+							"request": {
+								"url": "https://localhost:{{portMovimiento}}/api/movimientos",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"tipoMovimiento\": \"C\",\r\n  \"valor\": 10,\r\n  \"cuentaId\": 3\r\n}"
+								},
+								"description": "Crea Movimiento"
+							},
+							"response": []
+						},
+						{
+							"name": "Delete",
+							"request": {
+								"url": "https://localhost:{{portMovimiento}}/api/movimientos/4",
+								"method": "DELETE",
+								"header": [],
+								"body": {},
+								"description": "Elimina un Movimiento"
+							},
+							"response": []
+						},
+						{
+							"name": "Put",
+							"request": {
+								"url": "https://localhost:{{portMovimiento}}/api/movimientos/6",
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": 6,\r\n  \"fecha\": \"2022-07-10\",\r\n  \"tipoMovimiento\": \"D\",\r\n  \"valor\": -540.00,\r\n  \"saldo\": 0,\r\n  \"estado\": true,\r\n  \"cuentaId\": 5\r\n}"
+								},
+								"description": "Actualiza un Movimiento"
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Reportes",
+					"description": "",
+					"item": [
+						{
+							"name": "Get",
+							"request": {
+								"url": {
+									"raw": "https://localhost:{{portReporte}}/api/Cliente/4/Reportes?fechaIni=2022-01-01&fechaFin=2023-01-01",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "{{portReporte}}",
+									"path": [
+										"api",
+										"Cliente",
+										"4",
+										"Reportes"
+									],
+									"query": [
+										{
+											"key": "fechaIni",
+											"value": "2022-01-01",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "fechaFin",
+											"value": "2023-01-01",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [],
+								"body": {},
+								"description": "Obtiene el Reporte de movimiento"
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				}
+			]
+		}
+	]
+}
