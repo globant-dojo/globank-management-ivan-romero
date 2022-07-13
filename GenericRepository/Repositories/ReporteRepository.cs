@@ -1,7 +1,7 @@
-﻿using GenericRepository.Models;
+﻿using GenericRepository.Data;
 using GenericRepository.Interfaces;
+using GenericRepository.Models;
 using Microsoft.EntityFrameworkCore;
-using GenericRepository.Data;
 
 namespace GenericRepository.Repositories;
 

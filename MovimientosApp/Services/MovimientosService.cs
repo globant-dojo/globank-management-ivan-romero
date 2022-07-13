@@ -4,11 +4,6 @@ namespace MovimientosApp.Services
 {
     public class MovimientosService : IMovimientosService
     {
-        public MovimientosService()
-        {
-
-        }
-
         public decimal CalcularNuevoSaldo(Cuenta cuenta, string tipoMovimiento, decimal valor)
         {
             if (tipoMovimiento == "D")

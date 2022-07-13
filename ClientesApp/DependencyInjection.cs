@@ -1,8 +1,8 @@
-﻿using GenericRepository.Data;
+﻿using ClientesApp.Services;
+using GenericRepository.Data;
 using GenericRepository.Interfaces;
 using GenericRepository.Repositories;
 using Microsoft.EntityFrameworkCore;
-using ClientesApp.Services;
 
 namespace ClientesApp;
 

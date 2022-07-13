@@ -9,7 +9,7 @@ namespace ReportesApp.Services
         {
             return (from cuenta in cliente.Cuentas
                     from movimiento in cuenta.Movimientos
-                    let item = new ReporteDto()
+                    let item = new ReporteDto
                     {
                         Cliente = cliente.Nombre,
                         NumeroCuenta = cuenta.NumeroCuenta ?? "",

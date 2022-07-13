@@ -57,7 +57,7 @@ public class MovimientosController : ControllerBase
         var movimiento = _mapper.Map<Movimiento>(movimientoDto);
 
         if (movimiento.TipoMovimiento is null)
-            return BadRequest($"TipoMovimiento no válido.");
+            return BadRequest("TipoMovimiento no válido.");
 
         var saldoNuevo = _movimientosService.CalcularNuevoSaldo(cuentaEnBDD, movimiento.TipoMovimiento, movimiento.Valor);
 

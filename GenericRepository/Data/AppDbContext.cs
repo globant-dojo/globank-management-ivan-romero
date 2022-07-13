@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using GenericRepository.Models;
+﻿using System.Reflection;
 using GenericRepository.Interfaces;
+using GenericRepository.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using System.Reflection;
 
 namespace GenericRepository.Data
 {

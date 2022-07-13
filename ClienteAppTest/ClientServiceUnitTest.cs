@@ -121,16 +121,16 @@ namespace ClienteAppTest
             Assert.Equal(400, (result.Result as ObjectResult)?.StatusCode);
         }
 
-        private async Task<int> SaveChangesAsyncTest(int i)
+        private Task<int> SaveChangesAsyncTest(int i)
         {
-            return i;
+            return Task.FromResult(i);
         }
 
         private IQueryable<Cliente> ObtenerClientesTest()
         {
             var clientes = new List<Cliente>();
             clientes.Add(
-                    new Cliente()
+                    new Cliente
                     {
                         Id = 1,
                         Nombre = "Carlos García",
@@ -144,10 +144,10 @@ namespace ClienteAppTest
             return clientes.AsQueryable();
         }
 
-        private async Task<Cliente> ObtenerClienteAsyncTest()
+        private Task<Cliente> ObtenerClienteAsyncTest()
         {            
             var cliente =
-                    new Cliente()
+                    new Cliente
                     {
                         Id = 1,
                         Nombre = "Carlos García",
@@ -158,12 +158,12 @@ namespace ClienteAppTest
                         Telefono = "0987512455",
                         Estado = true
                     };
-            return cliente;
+            return Task.FromResult(cliente);
         }
 
-        private async Task<Cliente> ObtenerClienteAsyncTestNull()
+        private Task<Cliente> ObtenerClienteAsyncTestNull()
         {
-            return null;
+            return Task.FromResult<Cliente>(null);
         }
     }
 }

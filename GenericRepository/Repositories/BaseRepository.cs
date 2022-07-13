@@ -1,7 +1,7 @@
-﻿using GenericRepository.Data;
+﻿using System.Linq.Expressions;
+using GenericRepository.Data;
 using GenericRepository.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 
 namespace GenericRepository.Repositories;
 
@@ -25,16 +25,14 @@ public class BaseRepository<TEntity> : IRepository<TEntity>, IReadRepository<TEn
     {
         if (asNoTracking)
             return _context.Set<TEntity>().AsNoTracking();
-        else
-            return _context.Set<TEntity>().AsQueryable();
+        return _context.Set<TEntity>().AsQueryable();
     }
 
     public virtual IQueryable<TEntity> GetAllBySpec(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = true)
     {
         if (asNoTracking)
             return _context.Set<TEntity>().Where(predicate).AsNoTracking();
-        else
-            return _context.Set<TEntity>().Where(predicate).AsQueryable();
+        return _context.Set<TEntity>().Where(predicate).AsQueryable();
     }
 
     public virtual async Task<TEntity?> GetByIdAsync<TId>(TId id, CancellationToken cancellationToken = default) where TId : notnull

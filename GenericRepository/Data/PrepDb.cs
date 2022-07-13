@@ -35,7 +35,7 @@ namespace GenericRepository.Data
                 Console.WriteLine("--> Cargando data en BD...");
 
                 context.Clientes.AddRange(
-                    new Cliente()
+                    new Cliente
                     {
                         Nombre = "Carlos García",
                         Genero = "Masculino",
@@ -66,7 +66,7 @@ namespace GenericRepository.Data
                             }
                         }
                     },
-                    new Cliente()
+                    new Cliente
                     {
                         Nombre = "Jose Lema",
                         Direccion = "Otavalo sn y principal",
@@ -103,7 +103,7 @@ namespace GenericRepository.Data
                             }
                         }
                     },
-                    new Cliente()
+                    new Cliente
                     {
                         Nombre = "Marianela Montalvo",
                         Direccion = "Amazonas y NNUU",
@@ -140,7 +140,7 @@ namespace GenericRepository.Data
                             }
                         }
                     },
-                    new Cliente()
+                    new Cliente
                     {
                         Nombre = "Juan Osorio",
                         Direccion = "13 junio y Equinoccial",
